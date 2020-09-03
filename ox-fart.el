@@ -42,10 +42,11 @@
 
 (add-to-list 'org-latex-classes
              '("fart"                          ;class-name
-               "\\documentclass[twoside,headinclude,footinclude,BCOR=5mm,headings=standardclasses,headings=big]{scrartcl}
+               "\\documentclass[twoside,10pt]{article}
 
-\\usepackage{concmath}
-\\renewcommand*\\familydefault{\\ttdefault} %% Only if the base font of the document is to be typewriter style
+\\usepackage[defaultfam,light,tabular,lining]{montserrat} %% Option 'defaultfam'
+%% only if the base font of the document is to be sans serig
+\\renewcommand*\\oldstylenums[1]{{\\fontfamily{Montserrat-TOsF}\\selectfont #1}}
 
 \\RequirePackage[T1]{fontenc}
 \\usepackage[utf8]{inputenc}
@@ -59,6 +60,10 @@
 \\RequirePackage{enumitem}	        %% pour les listes numérotées
 \\RequirePackage[footnote]{snotez}	%% placer les notes de pied de page sur le coté
 \\RequirePackage{dashrule}
+\\RequirePackage{microtype,textcase}
+\\RequirePackage{titlesec}
+\\RequirePackage{booktabs}
+
 
 \\RequirePackage{amsmath,
 	amssymb,
@@ -74,22 +79,46 @@
 \\hyphenchar\\font=`\\-  %% to allow hyphenation
 }
 
-
-\\usepackage[a4paper,left=15mm,
+\\RequirePackage[a4paper,left=15mm,
 top=15mm,headsep=2\\baselineskip,
 textwidth=132mm,marginparsep=8mm,
-marginparwidth=40mm,textheight=51\\baselineskip,
+marginparwidth=40mm,textheight=58\\baselineskip,
 headheight=\\baselineskip]{geometry}
+
 
 \\definecolor{halfgray}{gray}{0.75}
 
 %%------------------------------------------------------------------------------
 %%	HEADERS
 %%------------------------------------------------------------------------------
+\\makeatletter
+%%% with titlesec
+%%\\titleformat{\\section}
+%%  {\\Large\\scshape\\color{red}}{\\thesection}{1ex}{}
+%%\\titleformat{\\subsection}
+%%  {\\large\\scshape\\color{red}}{\\thesubsection}{1ex}{}
+%%\\titleformat{\\subsubsection}
+%%  {\\normalfont\\scshape\\color{red}}{\\thesubsubsection}{1ex}{}
 
-\\renewcommand{\\sectionmark}[1]{\\markright{\\spacedlowsmallcaps{#1}}} %% The header for all pages (oneside) or for even pages (twoside)
-\\renewcommand{\\subsectionmark}[1]{\\markright{\\thesubsection~#1}} %% Uncomment when using the twoside option - this modifies the header on odd pages
-%%\\lehead{\\mbox{\\llap{\\small\\thepage\\kern1em\\color{halfgray} \\vline}\\color{halfgray}\\hspace{0.5em}\\rightmark\\hfil}} %% The header style
+\\titleformat{\\section}{\\Large\\bfseries\\itshape}{%%
+	\\hspace*{-3mm}\\fontsize{3ex}{3.6ex}\\sectionNumbers\\selectfont\\color{mdgreen}%%
+	\\raisebox{-1mm}{\\thesection}%%
+}{-3mm}{}{}
+
+\\titleformat{\\subsection}{\\large\\bfseries\\itshape}{%%
+	\\hspace*{-3mm}\\fontsize{3ex}{3.6ex}\\subsectionNumbers\\selectfont\\color{mdgreen}%%
+	\\raisebox{-1mm}{\\thesubsection}%%
+}{-3mm}{}{}
+\\titleformat*{\\subsubsection}{\\normalfont\\bfseries\\itshape}
+
+%%Titling spacing: left before after [right]
+\\titlespacing*{\\section}{0mm}{3mm}{0mm}
+\\titlespacing*{name=\\section, numberless}{0mm}{3mm}{0mm}
+\\titlespacing*{\\subsection}{0mm}{2mm}{0mm}
+\\titlespacing*{\\subsubsection}{0mm}{2mm}{0mm}
+
+
+%%\\renewcommand{\\subsectionmark}[1]{\\markright{\\thesubsection~#1}} %% Uncomment when using the twoside option - this modifies the header on odd pages
 
 \\PassOptionsToPackage{protrusion=true,final}{microtype}
 
@@ -97,8 +126,6 @@ headheight=\\baselineskip]{geometry}
     {\\skip\\noindent\\begin{minipage}
     {\\textwidth+\\marginparwidth+\\marginparsep}\\skip\\smallskip}
     {\\end{minipage}\\vspace{0.2mm}}
-
-\\makeatletter
 
 
 %% COLOR %<------------------------------------------------------------------->%
@@ -136,7 +163,7 @@ headheight=\\baselineskip]{geometry}
 \\newcommand{\\@separator}{%%
 \\rule{0ex}{2ex}%%
    %% Place the dashed rule 1X high
-  \\textcolor{mdgrey}{\\hdashrule{\\textwidth}{1pt}{2mm 1mm}}%%
+  \\textcolor{mdgrey}{\\hdashrule[0.5ex][x]{\\textwidth}{1pt}{2mm 1mm}}%%
 }
 
 
@@ -151,19 +178,9 @@ headheight=\\baselineskip]{geometry}
 \\newcommand{\\@abstract}{Set with \\texttt{\\textbackslash abstract\\{\\}}}
 \\renewcommand*{\\abstract}{\\renewcommand*{\\@abstract}}
 
-\\newcommand*{\\@academiclabel}
-            {\\FrenchEnglish{Academic objectives}{Faglig målsetting}}
-\\newcommand*{\\@academic}{\\texttt{\\textbackslash academic\\{\\}}}
-\\newcommand*{\\academic}{\\renewcommand*{\\@academic}}
-
-\\newcommand*{\\@accumulatedlabel}
-            {\\FrenchEnglish{Accumulated}{Akkumulerte kostnader}}
-
 \\newcommand*{\\@addresslabel} {\\FrenchEnglish{Addresse}{Address}}
 \\newcommand*{\\@address}{}
 \\newcommand*{\\address}[1]{\\renewcommand{\\@address}{#1}}
-
-\\newcommand*{\\@agreedlabel}{\\FrenchEnglish{AS AGREED}{AS AGREED}}
 
 \\newcommand*{\\@attachmentlabel}{\\FrenchEnglish{ATTACHMENTS}{ATTACHMENTS}}
 \\newcommand{\\@attachments}{Set with \\texttt{\\textbackslash attachments\\{\\}}}
@@ -206,15 +223,6 @@ headheight=\\baselineskip]{geometry}
             {\\FrenchEnglish{CLIENT'S REFERENCE}{OPPDRAGSGIVERS REFERANSE}}
 \\newcommand*{\\@clientref}{Set with \\texttt{\\textbackslash clientref\\{\\}}}
 \\newcommand*{\\clientref}{\\renewcommand*{\\@clientref}}
-
-\\newcommand*{\\@clientvat}{Set with \\texttt{\\textbackslash clientvat\\{\\}}}
-\\newcommand*{\\clientvat}{\\renewcommand*{\\@clientvat}}
-
-\\newcommand*{\\@commentslabel}{\\FrenchEnglish{COMMENTS ARE INVITED}{UTTALELSE}}
-
-\\newcommand*{\\@completelabel}{\\FrenchEnglish{COMPLETION YEAR}{SLUTTÅR}}
-\\newcommand*{\\@complete}{\\texttt{\\textbackslash complete\\{\\}}}
-\\newcommand*{\\complete}{\\renewcommand*{\\@complete}}
 
 \\newcommand*{\\@currency}{kNOK}
 \\newcommand*{\\currency}[1]{\\renewcommand{\\@currency}{#1}}
@@ -453,7 +461,7 @@ headheight=\\baselineskip]{geometry}
   \\color{mdgray}
   \\@separator\\newline
   ~~%%
-  \\begin{minipage}[c]{0.5\\textwidth}
+  \\begin{minipage}[c]{0.8\\textwidth}
     \\small{\\textbf{\\@projectlabel}}\\newline
     \\@project
   \\end{minipage}%%
@@ -511,14 +519,12 @@ headheight=\\baselineskip]{geometry}
 %% Recipient address and information colophon
 \\RequirePackage{colortbl,tabularx,setspace,rotating}
 \\newcommand{\\frontmatter}{%%
-  %%\\sffamily%%
   \\noindent%%
   \\begin{minipage}[b]{0.7\\textwidth}
     \\setlength{\\parskip}{2ex}%%
-    \\Huge\\@title
-
+    \\huge\\textbf\\@title
     %% ~ ensures \\ does not crash when \@wheremeeting is empty
-    \\Large \\@wheremeeting~\\\\\\@whenmeeting
+    \\Large\\\\\\@wheremeeting~\\\\\\@whenmeeting
   \\end{minipage}
   \\hfill
   \\begin{minipage}[b]{0.20\\textwidth}
@@ -526,8 +532,7 @@ headheight=\\baselineskip]{geometry}
     \\vspace*{-25pt} %%https://fr.overleaf.com/project/5f2c14ff95d5d40001ccdf96
    \\@rlogo
   \\end{minipage}
-
-  \\vspace{1ex}%%
+  \\vspace{4ex}%%
   \\noindent%%
   \\@separator\\\\
   \\rowcolors{4}{}{mdlightgray}
@@ -542,12 +547,11 @@ headheight=\\baselineskip]{geometry}
     \\rowcolor{white} \\@labeltext \\@participantslabel\\\\
     \\@participantstable
   \\end{tabularx}
-
   \\rowcolors{1}{}{} %% Back to normal
   \\@separator\\\\
   \\begin{minipage}{0.45\\textwidth}
-    {\\@labeltext \\@projectlabel}\\\\
-    \\@project
+    \\hspace*{\\tabcolsep}\\@labeltext \\@projectlabel\\\\
+    \\hspace*{\\tabcolsep}\\@project
   \\end{minipage}
   \\hfill
   \\begin{minipage}{0.3\\textwidth}
